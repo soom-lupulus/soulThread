@@ -12,6 +12,7 @@ import {
     optimism,
     arbitrum,
     base,
+    hardhat
 } from 'wagmi/chains';
 import {
     QueryClientProvider,
@@ -24,9 +25,9 @@ const WalletConnect = ({
     children: React.ReactNode;
 }>) => {
     const config = getDefaultConfig({
-        appName: 'My RainbowKit App',
+        appName: 'Soul Thread',
         projectId: 'f45d81cd23fc215845198ce6f58e0f6d',
-        chains: [mainnet, polygon, optimism, arbitrum, base],
+        chains: [mainnet, polygon, optimism, arbitrum, base, hardhat],
         ssr: false, // If your dApp uses server side rendering (SSR)
     });
     const queryClient = new QueryClient();

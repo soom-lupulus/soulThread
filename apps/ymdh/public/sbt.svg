@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+    <!-- 背景: 简约的浅灰色背景，圆角 -->
+    <rect width="400" height="300" fill="#F8F8F8" rx="15" ry="15" />
+
+    <!-- 八字字符串: 居中，大字体，深色，突出显示 -->
+    <text x="200" y="100" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#333"
+        text-anchor="middle">
+        ${baziStr}
+    </text>
+
+    <!-- 分割线: 细致的灰色线条 -->
+    <line x1="50" y1="150" x2="350" y2="150" stroke="#DDD" stroke-width="1" />
+
+    <!-- 其他信息: 左对齐，较小字体，中等灰色 -->
+    <text x="50" y="180" font-family="Arial, sans-serif" font-size="16" fill="#555">性别: ${gender ? "男" : "女"}</text>
+    <text x="50" y="210" font-family="Arial, sans-serif" font-size="16" fill="#555">经度: ${106}</text>
+    <text x="50" y="240" font-family="Arial, sans-serif" font-size="16" fill="#555">出生:
+        ${dayjs(birthTimestamp).format("YYYY-MM-DD HH:mm")}</text>
+
+    <!-- 底部文字: 居中，更小的字体，浅灰色 -->
+    <text x="200" y="280" font-family="Arial, sans-serif" font-size="12" fill="#888"
+        text-anchor="middle">SoulBadge</text>
+</svg>

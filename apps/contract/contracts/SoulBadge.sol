@@ -5,15 +5,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SoulBadge is ERC721, Ownable {
     // 所有的sbt数量
-    uint256 private _tokenIdCounter = 1;
+    uint256 private _tokenIdCounter = 0;
     // 当前八字的sbt数量
     mapping(address => uint) baziTokenId;
-    // 存储元数据
+    // 存储元数据【tokenId --> data】
     mapping(uint256 => SoulData) public soulData;
     // 用户地址到tokenId的映射
     mapping(address => uint256) userToSoulTokenId;
-    // 相同八字的id映射
-    mapping(string => uint256) baziToId;
+    // 有几个相同的八字【bazi-->sameBaziNum】
+    mapping(string => uint256) baziToSameCnt;
     // 基础元数据URI
     string private baseTokenURI;
     // 限制选择100年
@@ -26,7 +26,7 @@ contract SoulBadge is ERC721, Ownable {
 
     struct SoulData {
         string bazi; // 八字
-        uint8 gender; // 性别：0，1
+        int32 gender; // 性别：0，1
         int32 longitude; // 经度 * 1000000
         int32 latitude; // 纬度 * 1000000（精确到小数点后6位）
         uint256 birthDate; // 出生日期（Unix时间戳）
@@ -36,10 +36,14 @@ contract SoulBadge is ERC721, Ownable {
 
     constructor() ERC721("SoulBaZi", "SBZT") Ownable(msg.sender) {}
 
+    function getTokenIdCounter() public view returns (uint256) {
+        return _tokenIdCounter;
+    }
+
     // 铸造灵魂徽章
     function mintSoulBadge(
         string calldata _bazi,
-        uint8 _gender,
+        int32 _gender,
         int32 _longitude,
         int32 _latitude,
         uint256 _birthDate,
@@ -55,10 +59,10 @@ contract SoulBadge is ERC721, Ownable {
             "Invalid birth date"
         );
         // 100 年前
-        require(
-            _birthDate > block.timestamp - mintDateLimit,
-            "Birth date must be in 100 years"
-        );
+        // require(
+        //     _birthDate > block.timestamp - mintDateLimit,
+        //     "Birth date must be in 100 years"
+        // );
 
         // 验证经纬度在合理范围内
         require(
@@ -70,8 +74,8 @@ contract SoulBadge is ERC721, Ownable {
             "Invalid longitude"
         );
 
-        uint256 currentTokenId = ++_tokenIdCounter;
-        uint256 currentBaziId = ++baziToId[_bazi];
+        uint256 currentTokenId = ++_tokenIdCounter; // 总数
+        uint256 currentBaziId = ++baziToSameCnt[_bazi]; // 相同八字数量
         soulData[currentTokenId] = SoulData({
             bazi: _bazi,
             gender: _gender,
@@ -84,6 +88,11 @@ contract SoulBadge is ERC721, Ownable {
         userToSoulTokenId[msg.sender] = currentTokenId;
         _safeMint(msg.sender, currentTokenId);
         emit SoulBadgeMint(msg.sender, currentTokenId, _bazi);
+    }
+
+    // 找相同八字对应的id
+    function sameBaziCnt(string calldata bazi) public view returns (uint256) {
+        return baziToSameCnt[bazi];
     }
 
     function tokenURI(
